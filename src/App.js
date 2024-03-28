@@ -1,8 +1,11 @@
+import HomePage from "./components/HomePage";
+
+
 function App() {
   return (
-    <div>
-      Stack Tags
-    </div>
+    <>
+      <HomePage />
+    </>
   );
 }
 
