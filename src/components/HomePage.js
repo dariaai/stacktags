@@ -1,6 +1,6 @@
 import { Table, Container, Paper, Box, Pagination, TextField, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TableSortLabel, CircularProgress } from "@mui/material"
 import { useContext, useEffect } from "react"
-import { TagContext } from "./providers/TagsProvider";
+import { TagContext } from "../providers/TagsProvider";
 
 const HomePage = () => {
     const { tags,
@@ -13,7 +13,6 @@ const HomePage = () => {
         maxCount,
         loading,
         handleSort,
-        sortedTags,
         fetchTags } = useContext(TagContext);
 
     const tableHeaders = {
@@ -25,9 +24,6 @@ const HomePage = () => {
         fetchTags()
     }, [rows, pagination]);
 
-    useEffect(() => {
-        setTags(sortedTags);
-    }, [sortBy])
 
     return (
         <>
@@ -57,9 +53,9 @@ const HomePage = () => {
                                 </TableCell>
                                 <TableCell>
                                     <TableSortLabel
-                                        active={sortBy.column === 'count'}
+                                        active={sortBy.column === 'popular'}
                                         direction={sortBy.direction}
-                                        onClick={() => handleSort('count')}>
+                                        onClick={() => handleSort('popular')}>
                                         {tableHeaders.secondColumn}
                                     </TableSortLabel>
                                 </TableCell>

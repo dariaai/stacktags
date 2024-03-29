@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import axios from "axios";
 
 export const TagContext = createContext(null);
@@ -7,7 +7,7 @@ const TagsProvider = ({ children }) => {
 
     const [tags, setTags] = useState([]);
     const [sortBy, setSortBy] = useState({
-        column: 'Name',
+        column: 'name',
         direction: 'asc'
     });
     const [rows, setRows] = useState(5);
@@ -18,7 +18,7 @@ const TagsProvider = ({ children }) => {
     const fetchTags = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`https://api.stackexchange.com/2.3/tags?page=${pagination}&pagesize=${rows}&site=stackoverflow`);
+            const response = await axios.get(`https://api.stackexchange.com/2.3/tags?page=${pagination}&pagesize=${rows}&order=${sortBy.direction}&sort=${sortBy.column}&site=stackoverflow`);
             const maxPaginationResponse = await axios.get(`https://api.stackexchange.com/2.3/tags?site=stackoverflow&filter=!HUWWJ)6LYhiHX71CO`)
 
             setTags(response.data.items);
@@ -30,20 +30,17 @@ const TagsProvider = ({ children }) => {
         }
     };
 
-    const sortedTags = [...tags].sort((a, b) => {
-        if (sortBy.column === 'name') {
-            return sortBy.direction === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-        } else {
-            return sortBy.direction === 'asc' ? a.count - b.count : b.count - a.count;
-        }
-    });
-
     const handleSort = (name) => {
         setSortBy({
             column: name,
             direction: sortBy.column === name && sortBy.direction === 'asc' ? 'desc' : 'asc'
-        })
-    }
+        });
+    };
+
+    useEffect(() => {
+        fetchTags()
+    }, [sortBy]);
+
     return (
         <TagContext.Provider value={{
             tags,
@@ -56,7 +53,6 @@ const TagsProvider = ({ children }) => {
             maxCount,
             loading,
             handleSort,
-            sortedTags,
             fetchTags
         }}>
             {children}

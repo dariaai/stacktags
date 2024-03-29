@@ -1,5 +1,5 @@
 import HomePage from "./components/HomePage";
-import TagsProvider from "./components/providers/TagsProvider";
+import TagsProvider from "./providers/TagsProvider";
 
 function App() {
   return (
