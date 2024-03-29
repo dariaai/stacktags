@@ -1,54 +1,33 @@
 import { Table, Container, Paper, Box, Pagination, TextField, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TableSortLabel, CircularProgress } from "@mui/material"
-import axios from "axios";
-import { useEffect, useState } from "react"
+import { useContext, useEffect } from "react"
+import { TagContext } from "./providers/TagsProvider";
 
 const HomePage = () => {
+    const { tags,
+        setTags,
+        sortBy,
+        rows,
+        setRows,
+        pagination,
+        setPagination,
+        maxCount,
+        loading,
+        handleSort,
+        sortedTags,
+        fetchTags } = useContext(TagContext);
 
-    const [tags, setTags] = useState([]);
-    const [sortBy, setSortBy] = useState({
-        column: 'Name',
-        direction: 'asc'
-    });
-    const [rows, setRows] = useState(5);
-    const [pagination, setPagination] = useState(1);
-    const [maxCount, setMaxCount] = useState(5);
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        const fetchTags = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(`https://api.stackexchange.com/2.3/tags?page=${pagination}&pagesize=${rows}&site=stackoverflow`);
-                const maxPaginationResponse = await axios.get(`https://api.stackexchange.com/2.3/tags?site=stackoverflow&filter=!HUWWJ)6LYhiHX71CO`)
-
-                setTags(response.data.items);
-                setMaxCount(Math.floor(maxPaginationResponse.data.total / rows));
-            } catch (error) {
-                alert(`Somerthing went wrong: ${error.response.data.error_message}`);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchTags();
-    }, [rows])
+    const tableHeaders = {
+        firstColumn: 'Name',
+        secondColumn: 'Count'
+    }
 
     useEffect(() => {
-        const sortedTags = [...tags].sort((a, b) => {
-            if (sortBy.column === 'name') {
-                return sortBy.direction === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-            } else {
-                return sortBy.direction === 'asc' ? a.count - b.count : b.count - a.count;
-            }
-        });
+        fetchTags()
+    }, [rows, pagination]);
+
+    useEffect(() => {
         setTags(sortedTags);
     }, [sortBy])
-
-    const handleSort = (name) => {
-        setSortBy({
-            column: name,
-            direction: sortBy.column === name && sortBy.direction === 'asc' ? 'desc' : 'asc'
-        })
-    }
 
     return (
         <>
@@ -73,7 +52,7 @@ const HomePage = () => {
                                         active={sortBy.column === 'name'}
                                         direction={sortBy.direction}
                                         onClick={() => handleSort('name')}>
-                                        Name
+                                        {tableHeaders.firstColumn}
                                     </TableSortLabel>
                                 </TableCell>
                                 <TableCell>
@@ -81,7 +60,7 @@ const HomePage = () => {
                                         active={sortBy.column === 'count'}
                                         direction={sortBy.direction}
                                         onClick={() => handleSort('count')}>
-                                        Count
+                                        {tableHeaders.secondColumn}
                                     </TableSortLabel>
                                 </TableCell>
                             </TableRow>
@@ -97,7 +76,7 @@ const HomePage = () => {
                                 tags.map((tag, i) => (
                                     <TableRow key={i}>
                                         <TableCell>{tag.name}</TableCell>
-                                        <TableCell>{tag.count}</TableCell>
+                                        <TableCell>{tag.co nt}</TableCell>
                                     </TableRow>
                                 ))
                             )}
@@ -110,10 +89,8 @@ const HomePage = () => {
                             </TableRow>
                         </TableFooter>
                     </Table>
-
                 </TableContainer>
             </Container >
-
         </>
     )
 }
