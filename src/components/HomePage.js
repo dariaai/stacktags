@@ -76,7 +76,7 @@ const HomePage = () => {
                                 tags.map((tag, i) => (
                                     <TableRow key={i}>
                                         <TableCell>{tag.name}</TableCell>
-                                        <TableCell>{tag.co nt}</TableCell>
+                                        <TableCell>{tag.count}</TableCell>
                                     </TableRow>
                                 ))
                             )}
