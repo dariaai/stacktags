@@ -12,7 +12,7 @@ const TagsProvider = ({ children }) => {
     });
     const [rows, setRows] = useState(5);
     const [pagination, setPagination] = useState(1);
-    const [maxCount, setMaxCount] = useState(5);
+    const [maxCount, setMaxCount] = useState(1);
     const [loading, setLoading] = useState(false);
 
     const fetchTags = async () => {
@@ -30,16 +30,16 @@ const TagsProvider = ({ children }) => {
         }
     };
 
-    const handleSort = (name) => {
+    const handleSort = (name, direction) => {
         setSortBy({
             column: name,
-            direction: sortBy.column === name && sortBy.direction === 'asc' ? 'desc' : 'asc'
+            direction
         });
     };
 
     useEffect(() => {
         fetchTags()
-    }, [sortBy]);
+    }, [sortBy, rows, pagination]);
 
     return (
         <TagContext.Provider value={{
